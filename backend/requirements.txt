@@ -27,3 +27,9 @@ requests==2.32.5
 
 python-dateutil==2.9.0.post0
 python-json-logger==3.3.0
+
+loguru==0.7.3
+
+pytest==8.4.1
+pytest-asyncio==1.1.0
+httpx==0.28.1
