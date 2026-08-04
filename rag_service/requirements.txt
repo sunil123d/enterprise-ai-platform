@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+langchain
+langchain-community
+langchain-text-splitters
+langchain-ollama
+langchain-chroma
+chromadb
+pypdf
+python-multipart
+rank-bm25
+#sentence-transformers
+#torch
+langchain-groq
+groq
+python-dotenv

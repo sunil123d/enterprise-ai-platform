@@ -1,0 +1,50 @@
+__pycache__/
+*.pyc
+*.pyo
+
+.venv/
+venv/
+
+.env
+
+*.db
+
+.chroma/
+
+app/chroma_db/
+
+app/ml/models/
+
+.pytest_cache/
+
+.vscode/
+
+.idea/
+
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Environment
+.env
+
+# React
+node_modules/
+dist/
+
+# Logs
+*.log
+backend/logs/
+
+# Uploaded PDFs
+rag_service/app/uploads/
+
+# Chroma Vector DB
+rag_service/app/chroma_db/
+
+# VS Code
+.vscode/
+.idea/
