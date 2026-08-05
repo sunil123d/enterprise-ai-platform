@@ -16,7 +16,9 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION
 )
-
+print("=" * 50)
+print("BACKEND MAIN.PY LOADED")
+print("=" * 50)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
