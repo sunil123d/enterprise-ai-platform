@@ -3,8 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.models.chat import Chat
 
-RAG_URL = "http://localhost:8001/chat"
+import os
 
+RAG_URL = os.getenv(
+    "RAG_SERVICE_URL",
+    "http://localhost:8001/chat"
+)
 
 def ask_rag(
     db: Session,

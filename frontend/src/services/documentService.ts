@@ -1,4 +1,6 @@
-const RAG_URL = "http://localhost:8001";
+const RAG_URL = import.meta.env.VITE_RAG_URL;
+
+
 
 export async function uploadDocument(file: File) {
     const formData = new FormData();
