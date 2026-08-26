@@ -33,7 +33,7 @@ def get_chain(selected_documents: list[str] = []):
 
     llm = ChatGroq(
 
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
 
         temperature=0
 
