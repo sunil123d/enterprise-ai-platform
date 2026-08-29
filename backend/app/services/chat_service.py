@@ -1,14 +1,14 @@
 import requests
 from sqlalchemy.orm import Session
-
 from app.models.chat import Chat
-
 import os
+
 
 RAG_URL = os.getenv(
     "RAG_SERVICE_URL",
     "http://localhost:8001/chat"
 )
+
 
 def ask_rag(
     db: Session,
@@ -37,39 +37,70 @@ def ask_rag(
             }
         )
 
-    # Send question + history + selected documents
-    response = requests.post(
-        RAG_URL,
-        json={
-            "question": question,
-            "history": conversation_history,
-            "documents": documents
+    print("\n========== RAG REQUEST ==========")
+    print("RAG URL:", RAG_URL)
+    print("QUESTION:", question)
+    print("DOCUMENTS:", documents)
+    print("HISTORY:", conversation_history)
+    print("=================================\n")
+
+    try:
+
+        # Send question + history + selected documents
+        response = requests.post(
+            RAG_URL,
+            json={
+                "question": question,
+                "history": conversation_history,
+                "documents": documents
+            },
+            timeout=120
+        )
+
+        print("RAG STATUS:", response.status_code)
+        print("RAG RESPONSE:", response.text)
+
+        if response.status_code != 200:
+
+            print("========== RAG ERROR ==========")
+            print("RAG URL:", RAG_URL)
+            print("STATUS:", response.status_code)
+            print("RESPONSE:", response.text)
+            print("================================")
+
+            raise Exception(
+                f"RAG Service Error: {response.status_code} - {response.text}"
+            )
+
+        result = response.json()
+
+        answer = result["answer"]
+        sources = result.get("sources", [])
+
+        # Save current chat
+        chat = Chat(
+            user_id=user_id,
+            question=question,
+            answer=answer
+        )
+
+        db.add(chat)
+        db.commit()
+        db.refresh(chat)
+
+        return {
+            "answer": answer,
+            "sources": sources
         }
-    )
 
-    if response.status_code != 200:
-        raise Exception("RAG Service Not Available")
+    except requests.exceptions.RequestException as e:
 
-    result = response.json()
+        print("========== RAG CONNECTION ERROR ==========")
+        print("RAG URL:", RAG_URL)
+        print("ERROR:", str(e))
+        print("==========================================")
 
-    answer = result["answer"]
-    sources = result["sources"]
-
-    # Save current chat
-    chat = Chat(
-        user_id=user_id,
-        question=question,
-        answer=answer
-    )
-
-    db.add(chat)
-    db.commit()
-    db.refresh(chat)
-
-    return {
-        "answer": answer,
-        "sources": sources
-    }
+        raise Exception(f"Cannot connect to RAG Service: {str(e)}")
 
 
 def delete_chat(
@@ -77,6 +108,7 @@ def delete_chat(
     user_id: int,
     chat_id: int
 ):
+
     chat = (
         db.query(Chat)
         .filter(
